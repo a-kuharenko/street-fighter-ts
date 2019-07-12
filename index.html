@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <title>Street Figth</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <h2 id="instruction">Select 2 fighters and press:</h2>
+      <button id="start-button" disabled><img src="resources/button.png" id='startImg' style="display:none"/></button>
+      <br>
+      <div id ="hp" style="display:none">
+        <a id='name1'></a>
+        <div id="health-bar1">
+          <div id="bar1">
+            <div id="hit1"></div>
+          </div>
+        </div>
+        <br>
+        <a id="name2"></a>
+        <div id="health-bar2">
+          <div id="bar2">
+            <div id="hit2"></div>
+          </div>
+        </div>
+        <h2 id="winnerName" style="text-align: center"></h2>
+      </div>
+    </div>
+    <div id="loading-overlay">
+      <img src="resources/logo.png"/>
+    </div>
+    <div id="details-form-container">
+      <form id="details-form">
+        <div id="details-message">Details info</div> 
+        Name:<input name="num" type="text" id="name" disabled><br>
+        Health:<input name="num" type="number" id="health"><br>
+        Attack:<input name="num" type="number" id="attack"><br>
+        Defense:<input name="num" type="number" id="defense"><br>
+        <input type="submit" value="Ок">
+      </form>
+    </div>
+    <script src="dist/bundle.js"></script>
+  </body>
+</html>
