@@ -96,7 +96,7 @@
 "use strict";
 
 exports.__esModule = true;
-var app_1 = __webpack_require__(/*! ./src/javascript/app */ "./src/javascript/app.ts");
+var app_1 = __webpack_require__(/*! ./src/typescript/app */ "./src/typescript/app.ts");
 __webpack_require__(/*! ./src/styles/styles.css */ "./src/styles/styles.css");
 new app_1["default"]();
 
@@ -723,9 +723,39 @@ module.exports = function (css) {
 
 /***/ }),
 
-/***/ "./src/javascript/FightController.ts":
+/***/ "./src/styles/styles.css":
+/*!*******************************!*\
+  !*** ./src/styles/styles.css ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!./styles.css */ "./node_modules/css-loader/dist/cjs.js!./src/styles/styles.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./src/typescript/FightController.ts":
 /*!*******************************************!*\
-  !*** ./src/javascript/FightController.ts ***!
+  !*** ./src/typescript/FightController.ts ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -733,7 +763,7 @@ module.exports = function (css) {
 "use strict";
 
 exports.__esModule = true;
-var Fighter_1 = __webpack_require__(/*! ./Fighter */ "./src/javascript/Fighter.ts");
+var Fighter_1 = __webpack_require__(/*! ./Fighter */ "./src/typescript/Fighter.ts");
 var fightController = /** @class */ (function () {
     function fightController(fightersView) {
         var _this = this;
@@ -742,6 +772,7 @@ var fightController = /** @class */ (function () {
         document.getElementById('instruction').style.display = 'block';
         document.getElementById('startImg').style.display = 'block';
         startButton.addEventListener('click', function () { return _this._handleClickFight(fightersView); });
+        this.inGame = false;
         this._choosed = fightersView.fight;
     }
     fightController.prototype._fight = function (fighters, callback) {
@@ -752,14 +783,8 @@ var fightController = /** @class */ (function () {
         var health2 = fighter2.health;
         var interval = setInterval(function () {
             if (+fighter1.health > 0 && +fighter2.health > 0) {
-                var damage1 = fighter2.getHitPower() - fighter1.getBlockPower();
-                fighter1.health = (+fighter1.health - (damage1 > 0 ? damage1 : 0)).toString();
-                var barWidth1 = (+fighter1.health / +health1) * 100;
-                var hitWidth1 = (damage1 / +health1) * 100;
-                var damage2 = fighter1.getHitPower() - fighter2.getBlockPower();
-                fighter2.health = (+fighter2.health - (damage2 > 0 ? damage2 : 0)).toString();
-                var barWidth2 = (+fighter2.health / +health2) * 100;
-                var hitWidth2 = (damage2 / +health2) * 100;
+                var _a = _this._getDamage(fighter1, fighter2, health1), barWidth1 = _a[0], hitWidth1 = _a[1];
+                var _b = _this._getDamage(fighter2, fighter1, health2), barWidth2 = _b[0], hitWidth2 = _b[1];
                 _this._updateHpBars(barWidth1, hitWidth1, barWidth2, hitWidth2);
             }
             else {
@@ -770,18 +795,22 @@ var fightController = /** @class */ (function () {
     };
     fightController.prototype._handleClickFight = function (fightersView) {
         var _this = this;
-        var fighters = fightersView.fight.map(function (fighter) {
-            return new Fighter_1["default"](fightersView.fightersDetailsMap.get(fighter._id));
-        });
-        document.getElementById('start-button').disabled = true;
-        document.getElementById('hp').style.display = 'block';
-        var winAudio = new Audio("../../resources/sounds/victory.mp3");
-        var startAudio = new Audio("../../resources/sounds/round1.mp3");
-        startAudio.play();
-        this._fight(fighters, function (winner) {
-            _this._displayWinner(winner);
-            winAudio.play();
-        });
+        if (!this.inGame) {
+            var fighters = fightersView.fight.map(function (fighter) {
+                return new Fighter_1["default"](fightersView.fightersDetailsMap.get(fighter._id));
+            });
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('hp').style.display = 'block';
+            var winAudio_1 = new Audio("../../resources/sounds/victory.mp3");
+            var startAudio = new Audio("../../resources/sounds/round1.mp3");
+            startAudio.play();
+            this.inGame = true;
+            this._fight(fighters, function (winner) {
+                _this._displayWinner(winner);
+                _this.inGame = false;
+                winAudio_1.play();
+            });
+        }
     };
     fightController.prototype._inizializeHpBars = function (fighter1, fighter2) {
         document.getElementById('name1').innerText = fighter1.name;
@@ -811,6 +840,13 @@ var fightController = /** @class */ (function () {
         if (this._choosed.length === 2)
             document.getElementById('start-button').disabled = false;
     };
+    fightController.prototype._getDamage = function (fighter1, fighter2, health) {
+        var damage1 = fighter2.getHitPower() - fighter1.getBlockPower();
+        fighter1.health = (+fighter1.health - (damage1 > 0 ? damage1 : 0)).toString();
+        var barWidth1 = (+fighter1.health / +health) * 100;
+        var hitWidth1 = (damage1 / +health) * 100;
+        return [barWidth1, hitWidth1];
+    };
     return fightController;
 }());
 exports["default"] = fightController;
@@ -818,9 +854,9 @@ exports["default"] = fightController;
 
 /***/ }),
 
-/***/ "./src/javascript/Fighter.ts":
+/***/ "./src/typescript/Fighter.ts":
 /*!***********************************!*\
-  !*** ./src/javascript/Fighter.ts ***!
+  !*** ./src/typescript/Fighter.ts ***!
   \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -859,9 +895,9 @@ exports["default"] = Fighter;
 
 /***/ }),
 
-/***/ "./src/javascript/app.ts":
+/***/ "./src/typescript/app.ts":
 /*!*******************************!*\
-  !*** ./src/javascript/app.ts ***!
+  !*** ./src/typescript/app.ts ***!
   \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -904,9 +940,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var fightersView_1 = __webpack_require__(/*! ./fightersView */ "./src/javascript/fightersView.ts");
-var fightersService_1 = __webpack_require__(/*! ./services/fightersService */ "./src/javascript/services/fightersService.ts");
-var FightController_1 = __webpack_require__(/*! ./FightController */ "./src/javascript/FightController.ts");
+var fightersView_1 = __webpack_require__(/*! ./fightersView */ "./src/typescript/fightersView.ts");
+var fightersService_1 = __webpack_require__(/*! ./services/fightersService */ "./src/typescript/services/fightersService.ts");
+var FightController_1 = __webpack_require__(/*! ./FightController */ "./src/typescript/FightController.ts");
 var App = /** @class */ (function () {
     function App() {
         this._startApp();
@@ -952,9 +988,9 @@ exports["default"] = App;
 
 /***/ }),
 
-/***/ "./src/javascript/fighterView.ts":
+/***/ "./src/typescript/fighterView.ts":
 /*!***************************************!*\
-  !*** ./src/javascript/fighterView.ts ***!
+  !*** ./src/typescript/fighterView.ts ***!
   \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -975,7 +1011,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-var view_1 = __webpack_require__(/*! ./view */ "./src/javascript/view.ts");
+var view_1 = __webpack_require__(/*! ./view */ "./src/typescript/view.ts");
 var FighterView = /** @class */ (function (_super) {
     __extends(FighterView, _super);
     function FighterView(fighter, handleClick) {
@@ -1012,9 +1048,9 @@ exports["default"] = FighterView;
 
 /***/ }),
 
-/***/ "./src/javascript/fightersView.ts":
+/***/ "./src/typescript/fightersView.ts":
 /*!****************************************!*\
-  !*** ./src/javascript/fightersView.ts ***!
+  !*** ./src/typescript/fightersView.ts ***!
   \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1070,10 +1106,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var view_1 = __webpack_require__(/*! ./view */ "./src/javascript/view.ts");
-var fighterView_1 = __webpack_require__(/*! ./fighterView */ "./src/javascript/fighterView.ts");
-var fightersService_1 = __webpack_require__(/*! ./services/fightersService */ "./src/javascript/services/fightersService.ts");
-var showDetails_1 = __webpack_require__(/*! ./showDetails */ "./src/javascript/showDetails.ts");
+var view_1 = __webpack_require__(/*! ./view */ "./src/typescript/view.ts");
+var fighterView_1 = __webpack_require__(/*! ./fighterView */ "./src/typescript/fighterView.ts");
+var fightersService_1 = __webpack_require__(/*! ./services/fightersService */ "./src/typescript/services/fightersService.ts");
+var showDetails_1 = __webpack_require__(/*! ./showDetails */ "./src/typescript/showDetails.ts");
 var FightersView = /** @class */ (function (_super) {
     __extends(FightersView, _super);
     function FightersView(fighters) {
@@ -1168,9 +1204,9 @@ exports["default"] = FightersView;
 
 /***/ }),
 
-/***/ "./src/javascript/helpers/apiHelper.ts":
+/***/ "./src/typescript/helpers/apiHelper.ts":
 /*!*********************************************!*\
-  !*** ./src/javascript/helpers/apiHelper.ts ***!
+  !*** ./src/typescript/helpers/apiHelper.ts ***!
   \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1196,9 +1232,9 @@ exports.callApi = callApi;
 
 /***/ }),
 
-/***/ "./src/javascript/services/fightersService.ts":
+/***/ "./src/typescript/services/fightersService.ts":
 /*!****************************************************!*\
-  !*** ./src/javascript/services/fightersService.ts ***!
+  !*** ./src/typescript/services/fightersService.ts ***!
   \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1241,7 +1277,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var apiHelper_1 = __webpack_require__(/*! ../helpers/apiHelper */ "./src/javascript/helpers/apiHelper.ts");
+var apiHelper_1 = __webpack_require__(/*! ../helpers/apiHelper */ "./src/typescript/helpers/apiHelper.ts");
 var FighterService = /** @class */ (function () {
     function FighterService() {
     }
@@ -1292,9 +1328,9 @@ exports.fighterService = new FighterService();
 
 /***/ }),
 
-/***/ "./src/javascript/showDetails.ts":
+/***/ "./src/typescript/showDetails.ts":
 /*!***************************************!*\
-  !*** ./src/javascript/showDetails.ts ***!
+  !*** ./src/typescript/showDetails.ts ***!
   \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1339,9 +1375,9 @@ exports["default"] = showDetails;
 
 /***/ }),
 
-/***/ "./src/javascript/view.ts":
+/***/ "./src/typescript/view.ts":
 /*!********************************!*\
-  !*** ./src/javascript/view.ts ***!
+  !*** ./src/typescript/view.ts ***!
   \********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1363,36 +1399,6 @@ var View = /** @class */ (function () {
 }());
 exports["default"] = View;
 
-
-/***/ }),
-
-/***/ "./src/styles/styles.css":
-/*!*******************************!*\
-  !*** ./src/styles/styles.css ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!./styles.css */ "./node_modules/css-loader/dist/cjs.js!./src/styles/styles.css");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
 
 /***/ })
 

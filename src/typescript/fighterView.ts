@@ -8,18 +8,18 @@ interface Fighter{
 class FighterView extends View {
   element;
 
-  constructor(fighter: Fighter, handleClick: (event:Event, fighter:Fighter) => void) {
+  constructor(fighter: Fighter, handleClick: (event: Event, fighter: Fighter) => void) {
     super();
 
     this._createFighter(fighter, handleClick);
   }
 
-  private _createFighter(fighter: Fighter, handleClick: (event:Event, fighter:Fighter) => void) {
+  private _createFighter(fighter: Fighter, handleClick: (event: Event, fighter: Fighter) => void) {
     const { name, source } = fighter;
     const nameElement = this._createName(name);
     const imageElement = this._createImage(source);
 
-    this.element = this.createElement({ tagName: 'div', className: 'fighter' }) as HTMLDivElement;
+    this.element = this.createElement({ tagName: 'div', className: 'fighter' });
     this.element.append(imageElement, nameElement);
     this.element.addEventListener('click', event => handleClick(event, fighter), false);
   }

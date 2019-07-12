@@ -5,12 +5,12 @@ import showDetails from './showDetails'
 
 interface IFightersView{
     handleClick: () => void;
-    createFighters: (fighters:FighterElement[]) => void;
-    handleFighterClick: (ev, fighter:Fighter) => void;
+    createFighters: (fighters: FighterElement[]) => void;
+    handleFighterClick: (ev, fighter: Fighter) => void;
     fight: Fighter[];
     fighterElements: FighterElement[];
     element: HTMLElement;
-    fightersDetailsMap: Map<number,object>;
+    fightersDetailsMap: Map<number, object>;
 }
 
 interface Fighter{
